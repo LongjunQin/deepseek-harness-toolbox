@@ -13,6 +13,7 @@ A set of practical extensions for DeepSeek Harness: a native macOS launcher app 
 | [`plugins/dsh-cost-display`](plugins/dsh-cost-display/) | 输入框旁显示本会话花费(官方 token 计量×价目表)与账户实时余额,点击看明细 | Session cost + live account balance next to the composer |
 | [`plugins/dsh-annotate`](plugins/dsh-annotate/) | 像 Codex 那样:选中回复文字→就地批注→攒一批→一键发送 | Select text in replies, annotate in place, batch-send |
 | [`plugins/dsh-image-relay`](plugins/dsh-image-relay/) | 让不支持图片的 DeepSeek 模型"无感"处理粘贴的图片(配合官方 Codex 子代理) | Lets text-only DeepSeek models handle pasted images transparently (pairs with the official Codex subagent) |
+| [`plugins/dsh-theme-aluminum`](plugins/dsh-theme-aluminum/) | "铝合金工作台"拟物皮肤:浅色金属质感,信息优先 | Skeuomorphic brushed-aluminum skin, information-first |
 
 ## 截图 Screenshots
 
@@ -27,6 +28,10 @@ A set of practical extensions for DeepSeek Harness: a native macOS launcher app 
 图片无感处理(粘贴红框截图,模型定位红框并答出框内文字)/ Image relay end-to-end:
 
 ![image-relay](docs/screenshots/image-relay.png)
+
+铝合金拟物皮肤 / Aluminum skin:
+
+![theme](docs/screenshots/theme-aluminum.png)
 
 ## 插件安装 Plugin install
 

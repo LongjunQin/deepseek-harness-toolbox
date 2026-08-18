@@ -17,7 +17,12 @@ echo "== 图标 =="
 TMPDIR_ICON=$(mktemp -d)
 ICONSET="$TMPDIR_ICON/AppIcon.iconset"
 mkdir -p "$ICONSET"
-swift makeicon.swift "$TMPDIR_ICON/icon1024.png"
+# 优先用设计定稿的图标(官方鲸鱼+水晶玻璃蓝);缺失时回退到程序生成
+if [ -f AppIcon-1024.png ]; then
+  cp AppIcon-1024.png "$TMPDIR_ICON/icon1024.png"
+else
+  swift makeicon.swift "$TMPDIR_ICON/icon1024.png"
+fi
 cp "$TMPDIR_ICON/icon1024.png" "$ICONSET/icon_512x512@2x.png"
 for s in 16 32 128 256 512; do
   sips -z $s $s "$TMPDIR_ICON/icon1024.png" --out "$ICONSET/icon_${s}x${s}.png" >/dev/null
