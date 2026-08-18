@@ -12,24 +12,38 @@ const EXT = { 'image/png': 'png', 'image/jpeg': 'jpg', 'image/webp': 'webp', 'im
 export const name = 'dsh-image-relay'
 export const inject = ['attachments', 'llm', 'webServer']
 
+/** 本机是否装了 codex CLI(决定指引口径:派 Codex 还是自行分析) */
+function codexAvailable() {
+  const dirs = (process.env.PATH ?? '').split(':')
+    .concat(['/usr/local/bin', '/opt/homebrew/bin', join(homedir(), '.local', 'bin')])
+  return dirs.some((dir) => dir !== '' && existsSync(join(dir, 'codex')))
+}
+
 export function apply(ctx) {
   const inbox = join(homedir(), '.dsh', 'image-inbox')
   const exported = new Map()
+  const hasCodex = codexAvailable()
 
-  // 常驻提示词分节:模型并不知道 Codex 具备视觉与 ImageGen 能力,不提示的话
-  // 生图请求会退化成用 Python 画图。order 150 落在官方工具引导区间(100-199)。
+  // 常驻提示词分节:模型并不知道本机的图片能力布局,不提示的话生图请求会
+  // 退化成用 Python 画图。order 150 落在官方工具引导区间(100-199)。
+  // 有 codex → 派单口径;没有 → 自助口径(不引导模型去调注定失败的工具)。
   const systemPrompt = ctx.get('systemPrompt')
   if (systemPrompt !== undefined) {
+    const text = hasCodex ? [
+      '## 图片任务指引',
+      '你的对话模型自身没有图像视觉与图像生成能力,但本机已接入 Codex(subagent_codex 工具),它两者都具备:',
+      '- 理解/查看图片:把图片文件的绝对路径和要回答的问题一并交给 subagent_codex。',
+      '- 生成/修改图片:一律派 subagent_codex 用它的 ImageGen 能力完成(在任务里写明输出文件的绝对路径,放在当前工作区);不要自己用 Python/matplotlib 等代码绘图,除非用户明确要求程序绘图。',
+      '- 图片产出后:调用 read_image 读取该文件,让用户在界面上直接预览,并在回复中给出文件路径。',
+    ].join('\n') : [
+      '## 图片任务指引',
+      '你的对话模型自身没有图像视觉能力。对话中的图片会以本地文件路径形式提供给你;需要了解其内容时,用可用工具自行分析(读取像素、OCR 等),并如实说明分析方式与局限。',
+      '- 生成图片:用代码绘图完成(如 Python/PIL),并在产出后调用 read_image 读取该文件,让用户在界面上直接预览。',
+    ].join('\n')
     ctx.effect(() => systemPrompt.section({
       name: 'image-relay:codex-image-guide',
       order: 150,
-      text: [
-        '## 图片任务指引',
-        '你的对话模型自身没有图像视觉与图像生成能力,但本机已接入 Codex(subagent_codex 工具),它两者都具备:',
-        '- 理解/查看图片:把图片文件的绝对路径和要回答的问题一并交给 subagent_codex。',
-        '- 生成/修改图片:一律派 subagent_codex 用它的 ImageGen 能力完成(在任务里写明输出文件的绝对路径,放在当前工作区);不要自己用 Python/matplotlib 等代码绘图,除非用户明确要求程序绘图。',
-        '- 图片产出后:调用 read_image 读取该文件,让用户在界面上直接预览,并在回复中给出文件路径。',
-      ].join('\n'),
+      text,
     }))
   }
 
@@ -82,7 +96,10 @@ export function apply(ctx) {
   function guidance(index, file, ref) {
     const size = typeof ref?.width === 'number' && typeof ref?.height === 'number'
       ? `,${ref.width}x${ref.height}` : ''
-    return `\n[图片附件#${index}(${ref?.mediaType ?? 'image'}${size}):用户在此处粘贴了一张图片,已保存为本地文件 ${file} 。你无法直接看到图片内容。需要理解这张图时(读取文字、描述画面、分析红圈红框等标注、比对界面细节),请调用 subagent_codex 工具,把该文件路径和要回答的问题交给 Codex——它具备视觉能力,可以打开并查看这个文件。]\n`
+    const head = `\n[图片附件#${index}(${ref?.mediaType ?? 'image'}${size}):用户在此处粘贴了一张图片,已保存为本地文件 ${file} 。你无法直接看到图片内容。`
+    return hasCodex
+      ? head + `需要理解这张图时(读取文字、描述画面、分析红圈红框等标注、比对界面细节),请调用 subagent_codex 工具,把该文件路径和要回答的问题交给 Codex——它具备视觉能力,可以打开并查看这个文件。]\n`
+      : head + `需要理解这张图时,用可用工具自行分析该文件(读取像素、OCR 等),并如实说明分析方式与局限。]\n`
   }
 
   function isImageBlock(b) {

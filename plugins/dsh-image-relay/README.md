@@ -43,7 +43,34 @@ reveal-in-Finder buttons.
 
 ## 安装 Install
 
-除本插件外,还需官方 Codex 子代理(要求本机 `codex` CLI 已装且已登录):
+**Codex 是可选的。** 插件启动时自动探测本机有没有 `codex` CLI:
+
+- **有** → 完整体验:看图/生图派 Codex(视觉 + ImageGen);
+- **没有** → 自动降级:图片照样能粘贴、落盘、界面预览,指引改为让模型用
+  自带工具自行分析(像素/OCR),生图退回代码绘图。不装 Codex 不会报错。
+
+Codex is optional: the plugin detects the `codex` CLI at startup and adapts.
+Without it, images still paste/persist/preview; the model analyzes files with
+its own tools instead of delegating.
+
+### 基础安装(无 Codex)Basic
+
+```sh
+cd ~/.dsh/profiles/web
+corepack pnpm add link:/path/to/deepseek-harness-toolbox/plugins/dsh-image-relay
+```
+
+`cordis.patch.yml` 只加一行:
+
+```yaml
+- insert:
+    - id: image-relay
+      name: dsh-image-relay
+```
+
+### 完整安装(有 Codex)Full
+
+在基础安装之上,再装官方 Codex 子代理(要求本机 `codex` CLI 已装且已登录):
 
 ```sh
 cd ~/.dsh/profiles/web
