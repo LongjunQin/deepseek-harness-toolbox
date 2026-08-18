@@ -10,6 +10,23 @@ Text-only DeepSeek models reject pasted images. This plugin makes pasted images
 "just work": it admits them, exports them to local files, and steers the model
 to inspect them via the official Codex subagent (or its own tools).
 
+
+## 2026-08-18 新增:生图 + 界面预览
+
+- **生图指引**(宿主):经官方 `systemPrompt.section` 注入常驻提示词——图片生成
+  一律派 `subagent_codex` 用 Codex 的 ImageGen 能力(用户明确要程序绘图除外),
+  产出后调用 `read_image` 给用户预览。
+- **图片卡**(浏览器):接管 `read_image` 的工具卡(`tool.call.toolview`,
+  key=read_image)——图片直接渲染在对话里,点击放大,并带三个按钮:
+  在工作区查看 / 用系统应用打开 / 在访达中显示(macOS,经宿主路由执行 `open`)。
+  历史消息里的 read_image 也会追溯渲染。
+
+Adds Codex ImageGen steering (system prompt section) and an inline image card
+for `read_image` results: rendered preview, click-to-zoom, and open-in-app /
+reveal-in-Finder buttons.
+
+![imagegen](../../docs/screenshots/imagegen.png)
+
 ## 工作原理 How it works
 
 1. **放行发送准入**:harness 按 `resolveModelInfo().inputModalities` 在发送时
