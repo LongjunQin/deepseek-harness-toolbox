@@ -1,0 +1,11 @@
+{
+  "name": "dsh-image-relay",
+  "version": "0.1.0",
+  "description": "把对话里的图片落成本地文件并引导模型派 Codex 查看(DeepSeek Harness 常驻插件)",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  }
+}

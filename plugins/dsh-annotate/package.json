@@ -1,0 +1,21 @@
+{
+  "name": "dsh-annotate",
+  "version": "0.1.0",
+  "description": "选中回复文字加批注,攒够一批一键发送(DeepSeek Harness 常驻插件)",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-runtime",
+        "@deepseek-ai/dsh-client-ui-conversation"
+      ],
+      "platform": "web"
+    }
+  }
+}
