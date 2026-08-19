@@ -107,8 +107,10 @@ enum Setup {
     var deps = obj["dependencies"] as? [String: Any] ?? [:]
     var changed = false
     for name in plugins {
-      let spec = "file:" + pluginsDir.appendingPathComponent(name).path
-      if (deps[name] as? String) != spec { deps[name] = spec; changed = true }
+      // 已有任何形式的依赖声明(开发者的 link:、用户自己的版本)一律不动
+      guard deps[name] == nil else { continue }
+      deps[name] = "file:" + pluginsDir.appendingPathComponent(name).path
+      changed = true
     }
     guard changed else { return }
     obj["dependencies"] = deps
@@ -125,11 +127,14 @@ enum Setup {
       let target = pluginsDir.appendingPathComponent(name)
       guard fm.fileExists(atPath: target.path) else { continue }
       let link = nodeModules.appendingPathComponent(name)
-      let current = try? fm.destinationOfSymbolicLink(atPath: link.path)
-      if current != target.path {
-        try? fm.removeItem(at: link)
-        try? fm.createSymbolicLink(atPath: link.path, withDestinationPath: target.path)
+      if let current = try? fm.destinationOfSymbolicLink(atPath: link.path) {
+        // 已有链接:只接管指向本 App 快照目录的;开发者/包管理器建的链接不动
+        if current == target.path || !current.hasPrefix(pluginsDir.path) { continue }
+      } else if fm.fileExists(atPath: link.path) {
+        continue // 实体目录(包管理器安装),不动
       }
+      try? fm.removeItem(at: link)
+      try? fm.createSymbolicLink(atPath: link.path, withDestinationPath: target.path)
     }
   }
 

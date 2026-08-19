@@ -116,12 +116,12 @@ html, body { background: #f0f0f2 !important; color-scheme: light !important; }
 [class*="_sessionRow"] { border-radius: 6px !important; }
 [class*="_sessionRow"]:hover { background: rgba(30,40,55,.07) !important; }
 [class*="_sessionRow"][class*="_selected"] {
-  background: linear-gradient(#5a5f67, #34383e 55%, #2a2e33) !important;
-  border: 1px solid #1f2226 !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(0,0,0,.25) !important;
+  background: linear-gradient(#d0d3d8, #c4c8ce) !important;
+  border: 1px solid #adb1b8 !important;
+  box-shadow: inset 0 1px 3px rgba(30,35,42,.20), inset 0 -1px 0 rgba(255,255,255,.55) !important;
 }
 [class*="_sessionRow"][class*="_selected"] * {
-  color: #f4f5f7 !important; text-shadow: 0 -1px 0 rgba(0,0,0,.5);
+  color: #1e2226 !important; text-shadow: 0 1px 0 rgba(255,255,255,.45);
 }
 /* 会话区 */
 [class*="_scrollBody"] { background: #f7f7f8 !important; }
