@@ -28,8 +28,8 @@ management, and a system-WebKit window. A few MB, zero dependencies.
 需要 Xcode(swiftc)。Requires Xcode.
 
 ```sh
-./build.sh                       # 产物生成在上级目录
-cp -R "../DeepSeek Harness.app" /Applications/
+./build.sh                            # 产物生成在 app-src/.build/(隐藏目录,避免被启动台重复索引)
+cp -R "./.build/DeepSeek Harness.app" /Applications/
 ```
 
 ## 可配置 Configuration

@@ -3,7 +3,9 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-APP="../DeepSeek Harness.app"
+# 产物放隐藏目录,避免被 Spotlight/启动台索引成"第二个App"
+APP="./.build/DeepSeek Harness.app"
+mkdir -p ./.build
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
