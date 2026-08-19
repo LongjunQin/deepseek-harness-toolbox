@@ -29,6 +29,16 @@ window.__ModuleLoader__.load({
 
 		const TOKENS = {
 			"--dsw-alias-bg-base": "#fbfbfc",
+			"--dsw-static-deepseek-50": "#f2f3f5",
+			"--dsw-static-deepseek-100": "#e4e6ea",
+			"--dsw-static-deepseek-200": "#b9bec6",
+			"--dsw-static-deepseek-300": "#8b9099",
+			"--dsw-static-deepseek-400": "#5f646c",
+			"--dsw-static-deepseek-450": "#4a4f57",
+			"--dsw-static-deepseek-500": "#3a3f46",
+			"--dsw-static-deepseek-600": "#2c3036",
+			"--dsw-static-deepseek-800": "#1e2226",
+			"--dsw-static-deepseek-900": "#15181b",
 			"--dsw-alias-bg-layer-1": "#f2f2f4",
 			"--dsw-alias-bg-layer-2": "#ececee",
 			"--dsw-alias-bg-layer-3": "#e4e4e6",
