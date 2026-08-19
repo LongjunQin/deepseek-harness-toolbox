@@ -143,6 +143,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
   var dshPath: String?
   var npmPath: String?
   var nodePath: String?
+  let setupController = SetupWindowController()
 
   func applicationDidFinishLaunching(_ notification: Notification) {
     buildMenu()
@@ -192,6 +193,34 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
       log("未找到 npm 或全局包信息,跳过更新检查")
     }
 
+    // ── 一体化装配:插件随 App 分发,首启自动接入用户的 profile ──────────
+    setStatus("正在准备插件…")
+    Setup.ensureProfile(dsh: dsh, environment: childEnvironment())
+    let installed = Setup.syncPlugins()
+    let codexFound = Setup.codexPath() != nil
+    var withCodex = Setup.codexBridgeReady()
+    if codexFound && !withCodex, let npm = npmPath, let scoped = dshScopedLibDir(npm: npm) {
+      setStatus("检测到 Codex,正在接入(首次需要下载,请稍候)…")
+      withCodex = Setup.installCodexBridge(npm: npm, dshLibDir: scoped,
+                                           environment: childEnvironment(), log: log)
+      Setup.linkPlugins(installed) // npm 会清理它眼中的多余链接,跑完补建
+    }
+    if !installed.isEmpty || withCodex {
+      if Setup.writeComposition(plugins: installed, withCodex: withCodex, log: log) {
+        log("插件已装配:\(installed.joined(separator: ", "))\(withCodex ? " + codex 子代理" : "")")
+      }
+    }
+
+    // ── 首次配置:没有 API Key 就先引导 ────────────────────────────────
+    if !Setup.hasApiKey() {
+      setStatus("等待首次配置…")
+      let gate = DispatchSemaphore(value: 0)
+      DispatchQueue.main.async {
+        self.setupController.present(codexFound: codexFound) { gate.signal() }
+      }
+      gate.wait()
+    }
+
     if portIsOpen() {
       log("端口 \(kPort) 已有服务,直接复用(退出时不关闭它)")
     } else {
@@ -221,6 +250,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
       self.webView.isHidden = false
       self.webView.load(URLRequest(url: kURL))
     }
+  }
+
+  /// dsh 自带的 @deepseek-ai 包目录(Codex 子代理的 peer 依赖从这里软链)
+  func dshScopedLibDir(npm: String) -> URL? {
+    guard let pkgJSON = globalPackageJSON(npm: npm) else { return nil }
+    // <root>/@deepseek-ai/dsh/package.json → <root>/@deepseek-ai/dsh/node_modules/@deepseek-ai
+    let dshDir = URL(fileURLWithPath: pkgJSON).deletingLastPathComponent()
+    let scoped = dshDir.appendingPathComponent("node_modules/@deepseek-ai")
+    return FileManager.default.fileExists(atPath: scoped.path) ? scoped : nil
   }
 
   /// 全局安装的 @deepseek-ai/dsh 的 package.json 路径(经 npm root -g)
@@ -413,6 +451,10 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
     let inBrowser = NSMenuItem(title: "在浏览器中打开", action: #selector(openInBrowser), keyEquivalent: "")
     inBrowser.target = self
     view.addItem(inBrowser)
+    view.addItem(.separator())
+    let setupItem = NSMenuItem(title: "配置 API Key…", action: #selector(openSetup), keyEquivalent: "")
+    setupItem.target = self
+    view.addItem(setupItem)
     viewItem.submenu = view
 
     let winItem = NSMenuItem()
@@ -427,6 +469,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate, WKNavigationDelegate, 
 
   @objc func reloadPage() { webView.reload() }
   @objc func openInBrowser() { NSWorkspace.shared.open(kURL) }
+  @objc func openSetup() {
+    setupController.present(codexFound: Setup.codexPath() != nil) { [weak self] in
+      // 改过密钥后重载页面,让服务下一次请求就用上新值
+      self?.webView.reload()
+    }
+  }
 }
 
 let app = NSApplication.shared

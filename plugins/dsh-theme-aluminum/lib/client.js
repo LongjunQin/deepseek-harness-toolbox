@@ -45,16 +45,16 @@ window.__ModuleLoader__.load({
 			"--dsw-alias-border-l4": "#90959d",
 			"--dsw-alias-label-primary": "#202429",
 			"--dsw-alias-label-primary-dimmed": "#3a3f46",
-			"--dsw-alias-label-primary-bluish": "#2b3d55",
+			"--dsw-alias-label-primary-bluish": "#24282e",
 			"--dsw-alias-label-secondary": "#454a51",
 			"--dsw-alias-label-tertiary": "#6a7077",
 			"--dsw-alias-label-caption": "#82878e",
 			"--dsw-alias-label-dimmed": "#9aa0a8",
 			"--dsw-alias-label-primary-inverted": "#ffffff",
-			"--dsw-alias-brand-primary": "#4d6bfe",
-			"--dsw-alias-state-business-primary": "#3e78c0",
-			"--dsw-alias-button-primary-fill": "#4581c9",
-			"--dsw-alias-button-primary-hover": "#3a72b6",
+			"--dsw-alias-brand-primary": "#2b2f35",
+			"--dsw-alias-state-business-primary": "#3a3f46",
+			"--dsw-alias-button-primary-fill": "#2f3339",
+			"--dsw-alias-button-primary-hover": "#22262b",
 			"--dsw-alias-interactive-bg-hover": "rgba(30,40,55,.07)",
 			"--dsw-alias-interactive-bg-hover-solid": "#e6e8eb",
 			"--dsw-alias-interactive-bg-active": "rgba(30,40,55,.12)",
@@ -76,10 +76,10 @@ window.__ModuleLoader__.load({
 			"--dsw-alias-button-ghost-active-border": "#a9adb3",
 			"--dsw-alias-button-ghost-active-fill": "#e6e8eb",
 			"--dsw-alias-button-ghost-active-hover": "#dfe2e6",
-			"--dsw-alias-button-info-fill": "#4581c9",
-			"--dsw-alias-button-info-hover": "#3a72b6",
+			"--dsw-alias-button-info-fill": "#2f3339",
+			"--dsw-alias-button-info-hover": "#22262b",
 			"--dsw-alias-bg-module-platform": "#e8eaed",
-			"--dsw-alias-bg-multi-select": "#dfe6f0",
+			"--dsw-alias-bg-multi-select": "#e2e4e8",
 			"--dsw-alias-border-inverted": "#3a3f46",
 			"--dsw-alias-border-inverted2": "#55595f",
 			"--dsw-alias-brand-text": "#202429",
@@ -116,21 +116,21 @@ html, body { background: #f0f0f2 !important; color-scheme: light !important; }
 [class*="_sessionRow"] { border-radius: 6px !important; }
 [class*="_sessionRow"]:hover { background: rgba(30,40,55,.07) !important; }
 [class*="_sessionRow"][class*="_selected"] {
-  background: linear-gradient(#7f9dc4, #5c80ab 55%, #4f74a1) !important;
-  border: 1px solid #46689a !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.4) !important;
+  background: linear-gradient(#5a5f67, #34383e 55%, #2a2e33) !important;
+  border: 1px solid #1f2226 !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 1px 2px rgba(0,0,0,.25) !important;
 }
 [class*="_sessionRow"][class*="_selected"] * {
-  color: #fff !important; text-shadow: 0 -1px 0 rgba(0,0,0,.35);
+  color: #f4f5f7 !important; text-shadow: 0 -1px 0 rgba(0,0,0,.5);
 }
 /* 会话区 */
 [class*="_scrollBody"] { background: #f7f7f8 !important; }
 /* 用户气泡:浅蓝渐变 */
 [class*="_bubble"] {
-  background: linear-gradient(#e3eefa, #cfe0f2) !important;
-  border: 1px solid #a9c2dc !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.85), 0 1px 3px rgba(40,70,110,.14) !important;
-  color: #1c3350 !important;
+  background: linear-gradient(#f4f5f7, #e6e8ec) !important;
+  border: 1px solid #c2c6cc !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.9), 0 1px 3px rgba(30,35,45,.12) !important;
+  color: #22262b !important;
 }
 /* 输入卡:金属面板 */
 [class*="_card"]:has(textarea) {
@@ -152,14 +152,14 @@ button[class*="_trigger"] {
 button[class*="_trigger"]:hover { background: linear-gradient(#ffffff, #eceef1) !important; }
 /* 发送按钮:水晶玻璃蓝 */
 [class*="_card"]:has(textarea) button[class*="_primary"] {
-  background: radial-gradient(circle at 50% 120%, #a5d2ff 12%, transparent 46%), linear-gradient(#83b3e9, #4581c9 52%, #3670b4) !important;
-  border: 1px solid #31619f !important;
-  box-shadow: inset 0 1px 0 rgba(255,255,255,.6), 0 2px 4px rgba(0,0,0,.3) !important;
+  background: radial-gradient(circle at 50% 122%, rgba(210,220,235,.42) 10%, transparent 48%), linear-gradient(#5c626b, #2c3036 52%, #1b1e22) !important;
+  border: 1px solid #14171a !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 2px 5px rgba(0,0,0,.38) !important;
   position: relative; overflow: hidden;
 }
 [class*="_card"]:has(textarea) button[class*="_primary"]::before {
   content: ""; position: absolute; left: 7%; right: 7%; top: 5%; height: 45%; border-radius: 999px;
-  background: linear-gradient(rgba(255,255,255,.8), rgba(255,255,255,.06)); pointer-events: none;
+  background: linear-gradient(rgba(255,255,255,.34), rgba(255,255,255,.03)); pointer-events: none;
 }
 /* 加号按钮:金属圆钮(原为深色对比钮) */
 [class*="_card"]:has(textarea) button[class*="_add"] {

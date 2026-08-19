@@ -8,10 +8,23 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 
 echo "== 编译 =="
-swiftc -O -swift-version 5 -o "$APP/Contents/MacOS/DeepSeekHarness" main.swift \
+swiftc -O -swift-version 5 -o "$APP/Contents/MacOS/DeepSeekHarness" main.swift setup.swift \
   -framework Cocoa -framework WebKit
 
 cp Info.plist "$APP/Contents/"
+
+echo "== 打包插件 =="
+# 插件随 App 分发:首次启动时自动装配进用户的 ~/.dsh(见 setup.swift)
+PLUGIN_SRC="../plugins"
+if [ -d "$PLUGIN_SRC" ]; then
+  mkdir -p "$APP/Contents/Resources/plugins"
+  for p in dsh-cost-display dsh-annotate dsh-image-relay dsh-theme-aluminum; do
+    if [ -d "$PLUGIN_SRC/$p" ]; then
+      rsync -a --exclude node_modules --exclude .git "$PLUGIN_SRC/$p" "$APP/Contents/Resources/plugins/"
+      echo "  + $p"
+    fi
+  done
+fi
 
 echo "== 图标 =="
 TMPDIR_ICON=$(mktemp -d)

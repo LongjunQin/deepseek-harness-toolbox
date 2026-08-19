@@ -13,6 +13,12 @@
 - **原生窗口**:系统 WebKit 内嵌界面,外部链接自动交给默认浏览器,
   Cmd+R 刷新、Cmd+Q 退出;产物仅几 MB,无任何第三方依赖。
 
+- **一体化分发**:四个插件随 App 打包,首次启动自动装配进 `~/.dsh`
+  (幂等,检测到用户手工配置过同名插件则不接管);
+- **首次配置引导**:缺 API Key 时弹出配置窗(密钥只写本机
+  `~/.dsh/.credentials.yaml`),并自动探测本机 codex CLI——有则接入官方
+  Codex 子代理(图片理解/生成),没有则优雅降级,日后装了重启即自动接入;
+
 A native shell that turns `dsh web` into a real Mac app: double-click launch,
 auto-update of the official npm package on every start, clean server lifecycle
 management, and a system-WebKit window. A few MB, zero dependencies.
